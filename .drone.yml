@@ -49,6 +49,7 @@ steps:
   - name: deploy
     image: drone/drone-runner-ssh:latest
     pull: true
+    depends_on: [build_image_push]
     settings:
       host: 10.10.10.59
       port: 22
