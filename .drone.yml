@@ -78,8 +78,8 @@ volumes:
 
 # 可限制哪些分支可以推送自动 CICD
 trigger:
-  #  branch:
-  #    - main
-  ref:
-    - refs/tags/*
-    - refs/heads/master
+    branch:
+      - main
+  #ref:
+  #  - refs/tags/*
+  #  - refs/heads/master
