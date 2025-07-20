@@ -1,0 +1,92 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: maven_build
+    image: maven:3-jdk-11
+    volumes:
+      - name: maven-cache
+        path: /root/.m2/repository
+      - name: maven-build
+        path: /app/build
+    commands:
+      - mvn install -DskipTests=true -Dmaven.javadoc.skip=true
+      - mv -f /drone/src/target/*.jar /app/build/boot-demo.jar
+
+  - name: build_image_push
+    image: plugins/docker
+    depends_on: [clone]
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
+      - name: maven-build
+        path: /app/build
+    settings:
+      # context: ./app   # 指定项目所在目录的路径，即包含 Dockerfile 所处的目录
+      # dockerfile: ./app/Dockerfile   # Dockerfile 文件所处的位置
+      dockerfile: Dockerfile
+      registry: ccr.ccs.tencentyun.com 
+      repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
+      auto_tag: true
+      insecure: true
+      tags: latest   # 标签，可以是版本号或其他标识符
+      pull_image: false
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+
+  - name: clear_image  # 清理镜像
+    image: docker:latest
+    volumes:
+      - name: docker-sock
+        path: /var/run/docker.sock
+    commands:
+      - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi - {}
+
+  - name: deploy
+    image: drone/drone-runner-ssh:latest
+    pull: true
+    settings:
+      host: 10.10.10.59
+      port: 22
+      username: tgy
+      password: TGYadmin@2.com.cn
+      command_timeout: 2m
+      script: 
+        - echo ====开始部署====
+        - source /etc/profile
+        - docker login --username=97576340 --password=2EUzfRCYeTn827KU ccr.ccs.tencentyun.com
+        - docker pull ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
+        - docker stop boot-demo
+        - docker rm boot-demo
+        - docker run -d --name boot-demo -p 8000:8080 ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
+        # - docker-compose up -d
+        - echo ====部署成功====
+      
+secrets:
+- name: docker_username 
+  value: 97576340 
+- name: docker_password
+  value: 2EUzfRCYeTn827KU
+
+
+volumes:
+  - name: docker-sock
+    host:
+      path: /var/run/docker.sock
+  - name: maven-cache
+    host:
+      path: /data/drone/repository
+  - name: maven-build
+    host:
+      path: /data/drone/maven-build
+
+# 可限制哪些分支可以推送自动 CICD
+trigger:
+  #  branch:
+  #    - main
+  ref:
+    - refs/tags/*
+    - refs/heads/master
