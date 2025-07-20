@@ -16,7 +16,7 @@ steps:
 
   - name: build_image_push
     image: plugins/docker
-    depends_on: [clone]
+    depends_on: [maven_build]
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
@@ -39,6 +39,7 @@ steps:
 
   - name: clear_image  # 清理镜像
     image: docker:latest
+    depends_on: [build_image_push]
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
