@@ -65,13 +65,6 @@ steps:
         # - docker-compose up -d
         - echo ====部署成功====
       
-secrets:
-- name: docker_username 
-  value: 97576340 
-- name: docker_password
-  value: 2EUzfRCYeTn827KU
-
-
 volumes:
   - name: docker-sock
     host:
