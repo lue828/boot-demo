@@ -12,7 +12,4 @@ COPY ./boot-demo.jar /opt
 #指定dockerfile的命令在哪个目录下执行
 WORKDIR /opt
 
-# ENTRYPOINT ["java","-javaagent:/opt/skywalking/agent/skywalking-agent.jar","-Xms512m","-Xmx512m","-jar","app.jar"]
 ENTRYPOINT exec java -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar boot-demo.jar
-
-# ENTRYPOINT exec java -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom -jar /app.jar
