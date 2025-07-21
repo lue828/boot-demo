@@ -84,8 +84,7 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
-      - docker images
-      - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi - {}
+      - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi -f - {}   # 加 -f 强制删除
 
   - name: deploy
     image: drone/drone-runner-ssh:latest
