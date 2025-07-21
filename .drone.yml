@@ -90,6 +90,10 @@ steps:
     image: drone/drone-runner-ssh:latest
     pull: true
     depends_on: [build_image_push]
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=10.10.10.59:7500 #这里可以直接写名称，还可以写DRONE_SERVER_HOST的地址
+      - DRONE_RPC_SECRET=f4d5cdf738c7e575d41a8011d7dff3fa #drone-server的DRONE_RPC_SECRET（同上）
     settings:
       host: 10.10.10.59
       port: 22
