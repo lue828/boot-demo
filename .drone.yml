@@ -109,7 +109,8 @@ steps:
       script:
         - echo ====开始部署====
         - source /etc/profile
-        - docker login --username=${docker_username} --password=${docker_password} ccr.ccs.tencentyun.com
+        #- docker login --username=${repo_username} --password=${repo_password} ccr.ccs.tencentyun.com
+        - docker login -u ${repo_username} -p ${repo_password} ccr.ccs.tencentyun.com
         - docker pull ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         - docker stop boot-demo
         - docker rm boot-demo
