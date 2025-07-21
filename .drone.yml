@@ -19,9 +19,9 @@ steps:
     - name: dev-code
       path: /drone/code
     commands:
-      - env | grep -i http
-      - pwd
-      - ls -lah
+      # - env | grep -i http
+      # - pwd
+      # - ls -lah
       # - rm -rf /drone/src/.gradle
       # - ls -lah
       - echo "${DRONE_GIT_HTTP_URL} -> ${DRONE_BRANCH}"
@@ -29,8 +29,8 @@ steps:
       - git clone -b ${DRONE_BRANCH} --single-branch ${DRONE_GIT_HTTP_URL} ./
       # - git checkout ${DRONE_BRANCH}
       - git status
-      - pwd
-      - ls -lah
+      # - pwd
+      # - ls -lah
       - git diff --name-only HEAD~ HEAD | grep '/' |grep -v '"' | grep -v '^sql'| awk -F "/" '{print $1}'| uniq >> /drone/src/modules
       - cat /drone/src/modules | sort | uniq
     when:
@@ -61,8 +61,8 @@ steps:
         path: /var/run/docker.sock
       - name: maven-build
         path: /app/build
-    commands:
-      - ls -lrth /app/build
+    # commands:
+    #   - ls -lrth /app/build
     settings:
       # context: ./app   # 指定项目所在目录的路径，即包含 Dockerfile 所处的目录
       # dockerfile: ./app/Dockerfile   # Dockerfile 文件所处的位置
