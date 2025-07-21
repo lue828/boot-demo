@@ -19,6 +19,7 @@ steps:
     - name: dev-code
       path: /drone/code
     commands:
+      - env | grep -i http
       - pwd
       - ls -lah
       # - rm -rf /drone/src/.gradle
