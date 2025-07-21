@@ -7,7 +7,7 @@ ENV LANG=zh_CN.UTF-8 \
     SPRING_PROFILES_ACTIVE="dev"
 
 #将jar添加到容器的/opt目录中
-COPY ./boot-demo.jar /opt
+COPY /app/build/boot-demo.jar /opt
 
 #指定dockerfile的命令在哪个目录下执行
 WORKDIR /opt
