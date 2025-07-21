@@ -64,6 +64,7 @@ steps:
     settings:
       # context: ./app   # 指定项目所在目录的路径，即包含 Dockerfile 所处的目录
       # dockerfile: ./app/Dockerfile   # Dockerfile 文件所处的位置
+      context: /app/build
       dockerfile: /app/build/Dockerfile
       registry: ccr.ccs.tencentyun.com 
       repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
