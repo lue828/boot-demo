@@ -45,7 +45,8 @@ steps:
         path: /app/build
     commands:
       - mvn install -DskipTests=true -Dmaven.javadoc.skip=true
-      - mv -f /drone/src/target/*.jar /app/build/boot-demo.jar
+      - cp /drone/src/target/*.jar /app/build/boot-demo.jar
+      - cp Dockerfile /app/build/
 
   - name: build_image_push
     image: plugins/docker
@@ -58,7 +59,7 @@ steps:
     settings:
       # context: ./app   # 指定项目所在目录的路径，即包含 Dockerfile 所处的目录
       # dockerfile: ./app/Dockerfile   # Dockerfile 文件所处的位置
-      dockerfile: Dockerfile
+      dockerfile: /app/build/Dockerfile
       registry: ccr.ccs.tencentyun.com 
       repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
       auto_tag: true
