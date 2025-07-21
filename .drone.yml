@@ -87,13 +87,14 @@ steps:
       - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi -f - {}   # 加 -f 强制删除
 
   - name: deploy
-    image: drone/drone-runner-ssh:latest
+    # image: drone/drone-runner-ssh:latest
+    image: appleboy/drone-ssh
     pull: true
     depends_on: [build_image_push]
-    environment:
-      DRONE_RPC_PROTO: http
-      DRONE_RPC_HOST: 10.10.10.59:7500
-      DRONE_RPC_SECRET: f4d5cdf738c7e575d41a8011d7dff3fa
+    #environment:
+    #  DRONE_RPC_PROTO: http
+    #  DRONE_RPC_HOST: 10.10.10.59:7500
+    #  DRONE_RPC_SECRET: f4d5cdf738c7e575d41a8011d7dff3fa
     settings:
       host: 10.10.10.59
       port: 22
