@@ -11,6 +11,10 @@ steps:
     image: drone/git
     pull: if-not-exists
     privileged: true
+    environment:
+      HTTP_PROXY: http://10.10.13.56:7890
+      HTTPS_PROXY: http://10.10.13.56:7890
+      NO_PROXY: localhost,127.0.0.1,*.local,172.17.0.0/16,172.18.0.0/16,172.19.0.0/16,172.20.0.0/16,172.21.0.0/16,::1,192.168.0.0/24,10.10.0.0/16
     volumes:
     - name: dev-code
       path: /drone/code
