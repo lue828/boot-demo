@@ -85,6 +85,7 @@ steps:
       - name: docker-sock
         path: /var/run/docker.sock
     commands:
+      - docker images
       - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi - {}
 
   - name: deploy
