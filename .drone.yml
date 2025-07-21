@@ -61,8 +61,6 @@ steps:
         path: /var/run/docker.sock
       - name: maven-build
         path: /app/build
-    # commands:
-    #   - ls -lrth /app/build
     settings:
       # context: ./app   # 指定项目所在目录的路径，即包含 Dockerfile 所处的目录
       # dockerfile: ./app/Dockerfile   # Dockerfile 文件所处的位置
