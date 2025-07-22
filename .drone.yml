@@ -70,7 +70,8 @@ steps:
       repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
       auto_tag: true
       insecure: true
-      tags: latest   # 标签，可以是版本号或其他标识符
+      #tags: latest   # 标签，可以是版本号或其他标识符
+      tags: ${DRONE_TAG}
       pull_image: false
       username:
         from_secret: docker_username
@@ -113,7 +114,7 @@ steps:
         # - docker-compose up -d
         - echo ====部署成功====
 
-  - name: dingtalk
+  - name: notification
     image: lddsb/drone-dingtalk-message
     depends_on: [deploy]
     settings:
