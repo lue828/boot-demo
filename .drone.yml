@@ -77,6 +77,10 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
+    branches:
+      - main
+      - dev
+      - feature/*
 
 #  - name: clear_image  # 清理镜像
 #    image: docker:latest
