@@ -103,10 +103,9 @@ steps:
       password:
         from_secret: server_password
       command_timeout: 2m
-      tty: false  # 禁用TTY
       script:
         - echo ====开始部署====
-        #- docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ccr.ccs.tencentyun.com
+        # 先在目标服务器创建~/.docker/config.json
         - docker pull ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         - docker stop boot-demo
         - docker rm boot-demo
