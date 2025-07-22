@@ -69,6 +69,7 @@ steps:
       registry: ccr.ccs.tencentyun.com 
       repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
       auto_tag: true
+      # auto_tag_suffix: linux-amd64   # 标签后缀
       insecure: true
       #tags: latest   # 标签，可以是版本号或其他标识符：https://www.cnblogs.com/turingguo/p/15305900.html
       tags: ${DRONE_TAG##v}
