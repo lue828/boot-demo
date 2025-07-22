@@ -128,6 +128,7 @@ volumes:
 trigger:
     branch:
       - main
+      - dev
   #ref:
   #  - refs/tags/*
   #  - refs/heads/master
