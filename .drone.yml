@@ -91,10 +91,6 @@ steps:
     image: appleboy/drone-ssh
     pull: true
     depends_on: [build_image_push]
-    #environment:
-    #  DRONE_RPC_PROTO: http
-    #  DRONE_RPC_HOST: 10.10.10.59:7500
-    #  DRONE_RPC_SECRET: f4d5cdf738c7e575d41a8011d7dff3fa
     environment:
       DOCKER_USERNAME:
         from_secret: docker_username
@@ -109,8 +105,6 @@ steps:
       command_timeout: 2m
       script:
         - echo ====开始部署====
-        - source /etc/profile
-        #- docker login --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} ccr.ccs.tencentyun.com
         - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ccr.ccs.tencentyun.com
         - docker pull ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         - docker stop boot-demo
