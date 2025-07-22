@@ -112,6 +112,19 @@ steps:
         - docker run -d --name boot-demo -p 8000:8080 ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         # - docker-compose up -d
         - echo ====部署成功====
+
+  - name: dingtalk
+    image: lddsb/drone-dingtalk-message
+    depends_on: [deploy]
+    settings:
+      token: https://oapi.dingtalk.com/robot/send?access_token=6c83dd9c024ab4a65e16191715d88e9558d4fac18ad9195cbdce0ec99a4d2751
+      secret: SEC6dc99e5b4c7c263da62b20bb4d137e4aa3a8ff28d0b9b7714fd6a3863a0b50d2
+      type: markdown
+      message_pic: true
+      sha_link: true
+    when:
+      event: [push]
+      status: [success, failure]
       
 volumes:
   - name: docker-sock
