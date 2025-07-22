@@ -70,7 +70,7 @@ steps:
       repo:  ccr.ccs.tencentyun.com/lyy-demo/boot-demo
       auto_tag: true
       insecure: true
-      #tags: latest   # 标签，可以是版本号或其他标识符
+      #tags: latest   # 标签，可以是版本号或其他标识符：https://www.cnblogs.com/turingguo/p/15305900.html
       tags: ${DRONE_TAG##v}
       pull_image: false
       username:
