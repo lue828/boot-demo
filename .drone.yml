@@ -135,7 +135,6 @@ steps:
 #      - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi -f - {}   # 加 -f 强制删除
 
   - name: 构建部署
-    # image: drone/drone-runner-ssh:latest
     image: appleboy/drone-ssh
     pull: true
     depends_on: [构建镜像]
