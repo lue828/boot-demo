@@ -77,6 +77,10 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
+    when: # The when section provides the ability to conditionally limit the execution of steps at runtime.
+      event: 
+        - push
+        - tag
     branches:
       - main
       - dev
