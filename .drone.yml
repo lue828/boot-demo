@@ -71,7 +71,7 @@ steps:
       auto_tag: true
       insecure: true
       #tags: latest   # 标签，可以是版本号或其他标识符
-      tags: 1.0.0
+      tags: ${DRONE_TAG##v}
       pull_image: false
       username:
         from_secret: docker_username
