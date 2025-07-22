@@ -184,9 +184,7 @@ trigger:
   status:
     - success
     - failure
-  event:
-    - push
-    - tag
+
 depends_on:
   - 构建部署
 
