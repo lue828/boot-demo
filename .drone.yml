@@ -2,12 +2,32 @@ kind: pipeline
 type: docker
 name: default
 
+# 可限制哪些分支可以推送自动 CICD
+trigger:
+  branch:
+    - main
+    - dev
+  event:
+    - push
+    - tag
+  #ref:
+  #  - refs/tags/*
+  #  - refs/heads/main
+  #  - refs/heads/dev
+
 # 禁用默认克隆
 clone:
   disable: true
   
 steps:
-  - name: clone_source
+  - name: 环境变量
+    image: busybox
+    pull: if-not-exists
+    privileged: true
+    commands:
+      - env
+
+  - name: 克隆源码
     image: drone/git
     pull: if-not-exists
     privileged: true
@@ -39,10 +59,12 @@ steps:
         - dev
         - test
         - main
+    depends_on:
+      - 环境变量
 
-  - name: maven_build
+  - name: 编译源码
     image: maven:3.8.5-openjdk-17
-    depends_on: [clone_source]
+    depends_on: [克隆源码]
     volumes:
       - name: maven-cache
         path: /root/.m2/repository
@@ -53,9 +75,25 @@ steps:
       - cp /drone/src/target/*.jar /app/build/boot-demo.jar
       - cp Dockerfile /app/build/
 
-  - name: build_image_push
+  #  - name: 代码质量扫描
+  #    image: aosapps/drone-sonar-plugin
+  #    pull: if-not-exists
+  #    privileged: true
+  #    settings:
+  #      sonar_host:
+  #        from_secret: sonar_host
+  #      sonar_token:
+  #        from_secret: sonar_token
+  #    when:
+  #      branch:
+  #      #  - feature_1130_ci
+  #        - dev
+  #    depends_on:
+  #      - 编译源码
+
+  - name: 构建镜像
     image: plugins/docker
-    depends_on: [maven_build]
+    depends_on: [编译源码]
     volumes:
       - name: docker-sock
         path: /var/run/docker.sock
@@ -89,18 +127,18 @@ steps:
 
 #  - name: clear_image  # 清理镜像
 #    image: docker:latest
-#    depends_on: [build_image_push]
+#    depends_on: [构建镜像]
 #    volumes:
 #      - name: docker-sock
 #        path: /var/run/docker.sock
 #    commands:
 #      - docker images --filter=reference='ccr.ccs.tencentyun.com/lyy-demo/boot-demo:*' --format '{{.ID}}' | xargs -I {} docker rmi -f - {}   # 加 -f 强制删除
 
-  - name: deploy
+  - name: 构建部署
     # image: drone/drone-runner-ssh:latest
     image: appleboy/drone-ssh
     pull: true
-    depends_on: [build_image_push]
+    depends_on: [构建镜像]
     environment:
       DOCKER_USERNAME:
         from_secret: docker_username
@@ -122,19 +160,6 @@ steps:
         - docker run -d --name boot-demo -p 8000:8080 ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         # - docker-compose up -d
         - echo ====部署成功====
-
-  - name: notification
-    image: lddsb/drone-dingtalk-message
-    depends_on: [deploy]
-    settings:
-      token: https://oapi.dingtalk.com/robot/send?access_token=6c83dd9c024ab4a65e16191715d88e9558d4fac18ad9195cbdce0ec99a4d2751
-      secret: SEC6dc99e5b4c7c263da62b20bb4d137e4aa3a8ff28d0b9b7714fd6a3863a0b50d2
-      type: markdown
-      message_pic: true
-      sha_link: true
-    when:
-      event: [push]
-      status: [success, failure]
       
 volumes:
   - name: docker-sock
@@ -147,15 +172,34 @@ volumes:
     host:
       path: /data/drone/maven-build
 
-# 可限制哪些分支可以推送自动 CICD
+---
+kind: pipeline
+type: exec
+name: 消息通知
+
+#禁用默认克隆
+clone:
+  disable: true
+
 trigger:
-  branch:
-    - main
-    - dev
+  status:
+    - success
+    - failure
   event:
     - push
     - tag
-  ref:
-    - refs/tags/*
-    - refs/heads/main
-    - refs/heads/dev
+depends_on:
+  - 构建部署
+
+steps:
+  - name: 钉钉通知
+    environment:  # 使用 environment 传递参数
+      PLUGIN_TOKEN:
+        from_secret: dingtalk_token
+      PLUGIN_SECRET:
+        from_secret: dingtalk_secret
+      PLUGIN_TYPE: markdown
+      PLUGIN_DEBUG: false
+      PLUGIN_TPL: /data/drone/dingtalk/tpls/markdown.tpl  # tpl 的实际位置（绝对路径）
+    commands:
+      - /data/drone/dingtalk/dingtalk-message   # dingtalk-message 文件的位置（绝对路径）
