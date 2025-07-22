@@ -106,7 +106,7 @@ steps:
       tty: false  # 禁用TTY
       script:
         - echo ====开始部署====
-        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ccr.ccs.tencentyun.com
+        #- docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ccr.ccs.tencentyun.com
         - docker pull ccr.ccs.tencentyun.com/lyy-demo/boot-demo:latest
         - docker stop boot-demo
         - docker rm boot-demo
