@@ -125,7 +125,7 @@ steps:
       - dev
       - feature/*
 
-#  - name: clear_image  # 清理镜像
+#  - name: 清理镜像
 #    image: docker:latest
 #    depends_on: [构建镜像]
 #    volumes:
